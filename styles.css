@@ -3,16 +3,6 @@ body {
   margin: 0;
 }
 
-.operationwindow {
-  pointer-events: none;
-  background-color: black;
-  color: white;
-  padding: 5px;
-  font-size: 30px;
-  margin: 5px;
-  width: 432px;
-}
-
 .calculator {
   background-color: lightgray;
   padding: 10px;
@@ -33,14 +23,6 @@ button {
 
 button:active{
   background-color: gray;
-}
-
-.operator {
-  background-color: rgb(204, 136, 10);
-}
-
-.operator:focus {
-  background-color: rgb(240, 179, 65);
 }
 
 #equals {
@@ -67,8 +49,8 @@ button:active{
   color: white;
   height: 60px;
   width: 450px;
-  font-size: 60px;
-  padding-right: 3px;
+  font-size: 40px;
+  padding: 5px;
   margin: 0;
 }
 
