@@ -1,55 +1,95 @@
-const screen = document.querySelector('.screen')
-const allButtons = document.querySelectorAll('.btn')
+let operator = '';
+let previousValue = '';
+let currentValue = '';
 
-allButtons.forEach(button => {
-    button.addEventListener('click', (e) =>{
-        const value = e.target.dataset.value
+document.addEventListener("DOMContentLoaded", function(){
+  
+    let clear = document.querySelector("#clear-btn");
+    let equal = document.querySelector(".equal");
+    let decimal = document.querySelector(".decimal");
+    let numbers = document.querySelectorAll(".number");
+    let operators = document.querySelectorAll(".operator");
+    let previousScreen = document.querySelector(".previous");
+    let currentScreen = document.querySelector(".current");
 
-        if (value === '=') {
-            if (screen.innerText.includes('/')) {
-                const splitOperation = screen.innerText.split('/')
-                operate('/', splitOperation[0], splitOperation[1])
-            }
-            if (screen.innerText.includes('-')) {
-                const splitOperation = screen.innerText.split('-')
-                operate('-', splitOperation[0], splitOperation[1])
-            }
-            if (screen.innerText.includes('+')) {
-                const splitOperation = screen.innerText.split('+')
-                operate('+', splitOperation[0], splitOperation[1])
-            }
-            if (screen.innerText.includes('*')) {
-                const splitOperation = screen.innerText.split('*')
-                operate('*', splitOperation[0], splitOperation[1])
+    numbers.forEach((number) => number.addEventListener("click", function(e){
+        handleNumber(e.target.textContent)
+        currentScreen.textContent = currentValue;
+    }))
+
+    operators.forEach((op) => op.addEventListener("click", function(e){
+        if (operator) {
+            calculate()
+        }
+
+        handleOperator(e.target.textContent)
+        previousScreen.textContent = previousValue + " " + operator;
+        currentScreen.textContent = currentValue;
+    }))
+
+    clear.addEventListener("click", function(){
+        previousValue = '';
+        currentValue = '';
+        operator = '';
+        previousScreen.textContent = currentValue;
+        currentScreen.textContent = currentValue;
+    })
+
+    equal.addEventListener("click", function(){
+        if(currentValue != '' && previousValue != ''){
+            calculate()
+            previousScreen.textContent = '';
+            if(previousValue.length <= 9){
+                currentScreen.textContent = previousValue;
+            } else{
+                currentScreen.textContent = previousValue.slice(0,9) + "...";
             }
         }
-        
-        sum = value.replace('=', '')
-        screen.innerText += sum;
+    })
 
-        if (value === 'clear') {
-            screen.innerText = ''
-        }
-        if (value === '') {
-            screen.innerText = screen.innerText.slice(0, - 1);
-        }
+    decimal.addEventListener("click", function(){
+        addDecimal();
     })
 })
 
-const operate = (operator, value1, value2) => {
-    const number1 = Number(value1)
-    const number2 = Number(value2)
-    if (operator === '/') {
-        screen.innerText = number1 / number2
+function handleNumber(num){
+    if(currentValue.length <= 9){
+        currentValue += num; 
     }
-    if (operator === '-') {
-        screen.innerText = number1 - number2
-   }
-   if (operator === '+') {
-        screen.innerText = number1 + number2
-   }
-   if (operator === '*') {
-        screen.innerText = number1 * number2
-        
-   }
+}
+
+function handleOperator(op){
+    operator = op;
+    previousValue = currentValue;
+    currentValue = '';
+}
+
+function addDecimal(){
+  if(!currentValue.includes(".")){
+      currentValue += '.';
+  }
+}
+
+function calculate(){
+    previousValue = Number(previousValue);
+    currentValue = Number(currentValue);
+
+    if(operator === "+"){
+        previousValue += currentValue;
+    } else if(operator === "-"){
+        previousValue -= currentValue;
+    } else if(operator === "x"){
+        previousValue *= currentValue;
+    } else{
+        previousValue /= currentValue;
+    }
+
+    previousValue = roundNumber(previousValue);
+    previousValue = previousValue.toString();
+    currentValue = previousValue.toString();
+    operator = ''
+}
+
+function roundNumber(num){
+    return Math.round(num * 1000) / 1000;
 }
